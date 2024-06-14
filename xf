@@ -1,0 +1,1563 @@
+// Valores duplicados
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<int> quicksort(vector<int> arr) {
+    if (arr.size() <= 1) {
+        return arr;
+    }
+
+    int pivote = arr.back();
+    vector<int> menores;
+    vector<int> mayores;
+
+    for (size_t i = 0; i < arr.size() - 1; ++i) {
+        if (arr[i] == pivote) {
+            continue;
+        }
+        else if (arr[i] < pivote) {
+            menores.push_back(arr[i]);
+        }
+        
+        else {
+            mayores.push_back(arr[i]);
+        }
+    }
+
+    menores = quicksort(menores);
+    mayores = quicksort(mayores);
+
+
+    vector<int> resultado;
+
+    resultado.insert(resultado.begin(), menores.begin(), menores.end());
+    resultado.push_back(pivote);
+    resultado.insert(resultado.end(), mayores.begin(), mayores.end());
+
+    return resultado;
+}
+
+int main() {
+    vector<int> arreglo = { 7, 4, 3, 9, 23, 3, 6 ,1,1,1};
+    vector<int> resultado = quicksort(arreglo);
+
+
+    for (const auto& elemento : resultado) {
+        cout << elemento << " ";
+    }
+
+    return 0;
+}
+*******************************************
+//kesimo
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+
+int kaesimo(vector<int>a, int k) {
+    if (a.size() < k) {
+        return -1;
+    }
+    int piv = a.size() - 1;
+    vector<int>menor;
+    vector<int> mayor;
+    vector<int> iguales;
+    for (size_t i = 0; i < a.size() - 1; i++) {
+        if (a[i] < a[piv]) {
+            menor.push_back(a[i]);
+        }
+        else if (a[i] > a[piv]) {
+            mayor.push_back(a[i]);
+        }
+        else {
+            iguales.push_back(a[i]);
+        }
+
+    }
+    if (k < menor.size()) {
+        return kaesimo(menor, k);
+    }
+    else if (k > menor.size() + iguales.size()) {
+        return kaesimo(mayor, k - menor.size() - iguales.size() - 1);
+    }
+    else {
+        return a[piv];
+    }
+}
+
+int main() {
+    vector<int> i = { 5, 2, 20, 3, 1, 6, 7 ,1,1,1};
+    int k = kaesimo(i, 5);
+    cout << "el kaesimo: " <<k << endl;
+    return 0;
+}
+*******************************************
+//Mediana
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+void intercambiar(vector<int>& arr, int a, int b) {
+    int temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+}
+
+
+int particion(vector<int>& arr, int bajo, int alto) {
+    int pivote = arr[alto];
+    int i = bajo - 1;
+
+    for (int j = bajo; j < alto; ++j) {
+        if (arr[j] <= pivote) {
+            ++i;
+            intercambiar(arr, i, j);
+        }
+    }
+
+    intercambiar(arr, i + 1, alto);
+    return i + 1;
+}
+
+
+int busca(vector<int>& arr, int bajo, int alto, int k) {
+    if (bajo <= alto) {
+        int indice_piv = particion(arr, bajo, alto);
+
+        if (indice_piv == k) {
+            return arr[indice_piv];
+        }
+        else if (indice_piv < k) {
+            return busca(arr, indice_piv + 1, alto, k);
+        }
+        else {
+            return busca(arr, bajo, indice_piv - 1, k);
+        }
+    }
+
+    return -1; 
+}
+
+
+double mediana(vector<int>& arr) {
+    int n = arr.size();
+
+    if (n % 2 == 1) {
+     
+        return busca(arr, 0, n - 1, n / 2);
+    }
+    else {
+   
+        int mediana1 = busca(arr, 0, n - 1, n / 2 - 1);
+        int mediana2 = busca(arr, 0, n - 1, n / 2);
+        return (mediana1 + mediana2) / 2.0;
+    }
+}
+
+int main() {
+    vector<int> arr = { 12, 4, 5, 2, 7, 3, 19, 6 };
+
+    double mediana1 = mediana(arr);
+
+    cout << "La mediana es: " << mediana1 << endl;
+
+    return 0;
+}
+
+*******************************************
+//Merge
+#include <iostream>
+#include <vector>
+
+
+using namespace std;
+
+vector<int> mergesort(vector<int>a) {
+    if (a.size() <= 1) {
+        return a;
+    }
+    else {
+        int n = a.size() / 2;
+        vector<int> a1(a.begin(), a.begin() + n);
+        vector<int> a2(a.begin() + n, a.end());
+        a1 = mergesort(a1);
+        a2 = mergesort(a2);
+        int i1 = 0;
+        int i2 = 0;
+        vector<int> t;
+        for (; i1< a1.size() && i2 < a2.size();) {
+            if (a1[i1] < a2[i2]) {
+                t.push_back(a1[i1]);
+                i1++;
+
+            }
+            else {
+                t.push_back(a2[i2]);
+                i2++;
+            }
+        }
+        while (i1 < a1.size()) {
+            t.push_back(a1[i1]);
+            i1++;
+        }
+        while (i2 < a2.size()) {
+            t.push_back(a2[i2]);
+            i2++;
+        }
+        return t;
+    }
+
+}
+
+int main() {
+    vector<int > t1 = { 190,10,7,4,3,9,23,3,6 ,56};
+    t1 = mergesort(t1);
+    for (size_t u = 0; u < t1.size(); u++) {
+        cout << t1[u] << " ";
+    }
+    return 0;
+}
+*******************************************
+//Quick
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<int> quicksort(vector<int> arr) {
+    if (arr.size() <= 1) {
+        return arr;
+    }
+
+    int pivote = arr.back();
+    vector<int> menores;
+    vector<int> mayores;
+
+    for (size_t i = 0; i < arr.size() - 1; ++i) {
+        if (arr[i] <= pivote) {
+            menores.push_back(arr[i]);
+        }
+        else {
+            mayores.push_back(arr[i]);
+        }
+    }
+
+    menores = quicksort(menores);
+    mayores = quicksort(mayores);
+
+    
+    vector<int> resultado;
+   
+    resultado.insert(resultado.begin(), menores.begin(), menores.end());
+    resultado.push_back(pivote);
+    resultado.insert(resultado.end(), mayores.begin(), mayores.end());
+
+    return resultado;
+}
+
+int main() {
+    vector<int> arreglo = { 7, 4, 3, 9, 23, 3, 6 };
+    vector<int> resultado = quicksort(arreglo);
+
+
+    for (const auto& elemento : resultado) {
+        cout << elemento << " ";
+    }
+
+    return 0;
+}
+*******************************************
+// Xi
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+
+int busca(vector<int>& X, int inicio, int fin) {
+    if (inicio <= fin) {
+        int medio = inicio + (fin - inicio) / 2;
+
+        if (X[medio] == medio) {
+            return medio; 
+        }
+        else if (X[medio] > medio) {
+            return busca(X, inicio, medio - 1);
+        }
+        else {
+            
+            return busca(X, medio + 1, fin);
+        }
+    }
+
+    return -1;
+}
+
+int main() {
+
+    vector<int> X = { -10, -5, 0, 3, 7, 9, 12, 17 };
+
+    int indiceEncontrado = busca(X, 0, X.size() - 1);
+
+    if (indiceEncontrado != -1) {
+        cout << "si se encontro X[i] = " << indiceEncontrado << endl;
+    }
+    else {
+        cout << "no existe" << endl;
+    }
+
+    return 0;
+}
+*******************************************
+// Diseñe un algoritmo "divide y vencerás" que permita encontrar la mediana de
+// un vector sin tener que ordenar el vector previamente.
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+double findMedian(std::vector<int> &nums) {
+  int n = nums.size();
+  int left = 0, right = n - 1;
+  while (true) {
+    int mid = left + (right - left) / 2;
+    int i = left, j = right;
+    while (i < j) {
+      if (nums[i] < nums[right]) {
+        i++;
+      } else {
+        swap(nums[i], nums[j - 1]);
+        j--;
+      }
+    }
+    swap(nums[j], nums[right]);
+    if (j == n / 2) {
+      if (n % 2 == 0) {
+        return (nums[j] + nums[j - 1]) / 2.0;
+      } else {
+        return nums[j];
+      }
+    } else if (j > n / 2) {
+      right = j - 1;
+    } else {
+      left = j + 1;
+    }
+  }
+}
+
+int main() {
+  vector<int> nums{9, 1, 7, 5, 8, 4, 2, 10, 6};
+  double median = findMedian(nums);
+  cout << "La mediana es " << median << endl;
+  return 0;
+}
+*******************************************
+// Diseñe un algoritmo "divide y vencerás" que permita calcular el k−ésimo menor
+// elemento de un vector.
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int Quickselect(vector<int> arr, int k) {
+  if (arr.size() == 1) {
+    return arr[0];
+  }
+  int pivote = arr[arr.size() - 1];
+
+  vector<int> menores;
+  vector<int> iguales;
+  vector<int> mayores;
+
+  for (auto i = arr.begin(); i != arr.end(); i++) {
+    if (*i < pivote) {
+      menores.push_back(*i);
+    } else if (*i == pivote) {
+      iguales.push_back(*i);
+    } else {
+      mayores.push_back(*i);
+    }
+  }
+  if (k <= menores.size()) {
+    return Quickselect(menores, k);
+  }
+
+  else if (k <= menores.size() + iguales.size()) {
+    return pivote;
+  } else {
+    return Quickselect(mayores, k - menores.size() - iguales.size());
+  }
+}
+
+int main() {
+
+  vector<int> lista = {5, 18, 2, 4, 9, 5, 65, 1, 7, 3};
+  int respuesta = Quickselect(lista, 7);
+  cout << respuesta;
+}
+*******************************************
+//Dado un vector de n elementos, de los cuales algunos están duplicados, diseñe 
+//un algoritmo O(n log n) que permita eliminar todos los elementos duplicados.
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> merge (vector<int> fst, vector<int> scd){
+    vector<int> sol;
+    int i = 0;
+    int j = 0;
+    while (i < fst.size() && j < scd.size()) {
+        if (fst[i] < scd[j]) {
+            sol.push_back(fst[i]);
+            i++;
+        } else if (fst[i] > scd[j]) {
+            sol.push_back(scd[j]);
+            j++;
+        } else {
+            sol.push_back(fst[i]);
+            i++;
+            j++;
+        }
+    }
+    while (i < fst.size()) {
+            sol.push_back(fst[i]);
+            i++;
+        }
+
+        while (j < scd.size()) {
+            sol.push_back(scd[j]);
+            j++;
+        }
+    
+    return sol;
+}
+
+vector<int>erase(vector<int> toErase){
+    vector<int> sol;
+    if(toErase.size() == 1 )
+        return toErase;
+    int mid = (int) toErase.size()/2;
+    vector<int>leftPart(toErase.begin(),toErase.begin()+mid);
+    vector<int>rightPart(toErase.begin()+mid,toErase.end());
+    leftPart = erase(leftPart);
+    rightPart = erase(rightPart);
+    sol = merge(leftPart, rightPart);
+    return sol;
+}
+
+int main(int argc, const char * argv[]) {
+
+    vector<int> first= {1,6,5,9,0,9,5,6,9};
+    first= erase(first);
+    for(int i = 0; i<first.size();i++)
+        cout<<first[i]<<" ";
+    cout<<endl;
+    return 0;
+}
+*******************************************
+/*
+Dado un vector ordenado de números enteros X, diseñe un algoritmo "divide y vencerás" que permita determinar si existe un índice i tal que X[i] = i.
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int findIndex(vector<int>& nums, int low, int high) {
+    if (high >= low) {
+        int mid = low + (high - low) / 2;
+        if (mid == nums[mid])
+            return mid;
+        if (mid > nums[mid])
+            return findIndex(nums, (mid + 1), high);
+        else
+            return findIndex(nums, low, (mid -1));
+    }
+    return -1;
+}
+
+int main() {
+    vector<int> nums = {-10, -1, 0, 3, 10, 11, 30, 50, 100};
+    int index = findIndex(nums, 0, nums.size() - 1);
+    if (index != -1)
+        cout << "El indice es " << index << endl;
+    else
+        cout << "No existe tal indice" << endl;
+    return 0;
+}
+*******************************************
+/*
+Un array se dice que tiene un elemento mayoritario si más de la mitad de sus
+elementos tienen el mismo valor. Dado un array A, nos proponen que diseñemos
+un algoritmo eficiente que nos permita determinar sin un array tiene un elemento
+mayoritario y, en caso afirmativo, identifique dicho elemento. Ahora bien, los
+elementos del array no tienen porqué pertener a un dominio ordenado como el
+de los números enteros y, por tanto, NO se pueden realizar comparaciones del
+tipo A[i] > A[j]. En cualquier caso, sí que se pueden realizar comprobaciones del
+tipo A[i] == A[j]. 
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int findCandidate(vector<int>& nums) {
+    int majorityIndex = 0;
+    int count = 1;
+    for (int i = 1; i < nums.size(); i++) {
+        if (nums[majorityIndex] == nums[i])
+            count++;
+        else
+            count--;
+        if (count == 0) {
+            majorityIndex = i;
+            count = 1;
+        }
+    }
+    return nums[majorityIndex];
+}
+
+bool isMajority(vector<int>& nums, int candidate) {
+    int count = 0;
+    for (int i = 0; i < nums.size(); i++)
+        if (nums[i] == candidate)
+            count++;
+    return count > nums.size() / 2;
+}
+
+int main() {
+    vector<int> nums = {2, 2, 2, 2, 5, 5, 2, 3, 3};
+    int candidate = findCandidate(nums);
+    if (isMajority(nums, candidate))
+        cout << "El elemento mayoritario es " << candidate << endl;
+    else
+        cout << "No hay elemento mayoritario" << endl;
+    return 0;
+}
+*******************************************
+/*
+Diseñe y analice la eficiencia de un algoritmo "divide y vencerás" para encontrar el par de puntos más cercano dentro de un conjunto de puntos en el plano. Se podría diseñar un algoritmo "específico" para este problema calculando las distancias entre todos los pares de puntos O(n2), pero la técnica "divide y vencerás" nos permite obtener una solución más eficiente de la siguiente forma:
+a. Dividir: Se encuentra una línea vertical l que divide el conjunto P en dos
+conjuntos P_I y P_D de forma que cada uno contiene la mitad de los puntos
+en P. Todos los puntos en P_I están a la izquierda de la línea l y todos los
+puntos en P_D se encuentran a la derecha. El vector X se divide en dos subvectores X_I y X_D que contienen los puntos en P_I y P_D ordenados según el valor de su coordenada x. De igual forma, el vector Y se divide en dos arrays Y_I e Y_D que contienen los puntos de P_I y P_D, ordenados según su coordenada y.
+b. Resolver: Una vez divididos los vectores, se hacen las llamadas recursivas para encontrar los puntos más cercanos en P_I y P_D. La primera de ellas toma como argumentos los puntos P_I y los vectores X_I e Y_I. La segunda considera los puntos P_D y los vectores X_D e Y_D. Sean δ_I y δ_D las distancias más pequeñas en P_I y P_D.
+c. Combinar: Los puntos más cercanos son aquéllos que se encontraron a menor distancia en las llamadas recursivas (δ = min{δ_I, δ_D}) o bien es un par con un punto en P_I y otro en P_D. El algoritmo, por tanto, debe encontrar si existe un par a una distancia menor que δ. La clave está en saber que estos puntos, de existir, se encuentran dentro de una ventana con 2δ de ancho y δ de alto centrada alrededor de la línea l.
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <float.h>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+};
+
+bool compareX(Point a, Point b) { return a.x < b.x; }
+bool compareY(Point a, Point b) { return a.y < b.y; }
+
+double dist(Point p1, Point p2) {
+    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+}
+
+double bruteForce(vector<Point>& P, int n) {
+    double min = DBL_MAX;
+    for (int i = 0; i < n; ++i)
+        for (int j = i + 1; j < n; ++j)
+            if (dist(P[i], P[j]) < min)
+                min = dist(P[i], P[j]);
+    return min;
+}
+
+double stripClosest(vector<Point>& strip, int size, double d) {
+    double min = d;
+    sort(strip.begin(), strip.end(), compareY);
+    for (int i = 0; i < size; ++i)
+        for (int j = i + 1; j < size && (strip[j].y - strip[i].y) < min; ++j)
+            if (dist(strip[i], strip[j]) < min)
+                min = dist(strip[i], strip[j]);
+    return min;
+}
+
+double closestUtil(vector<Point>& Px, vector<Point>& Py, int n) {
+    if (n <= 3)
+        return bruteForce(Px, n);
+    int mid = n / 2;
+    Point midPoint = Px[mid];
+    vector<Point> Pyl, Pyr;
+    for (int i = 0; i < n; i++) {
+        if (Py[i].x <= midPoint.x)
+            Pyl.push_back(Py[i]);
+        else
+            Pyr.push_back(Py[i]);
+    }
+    vector<Point> leftPx(Px.begin(), Px.begin() + mid);
+    vector<Point> rightPx(Px.begin() + mid, Px.end());
+    double dl = closestUtil(leftPx, Pyl, mid);
+    double dr = closestUtil(rightPx, Pyr, n - mid);
+    double d = min(dl, dr);
+    vector<Point> strip;
+    for (int i = 0; i < n; i++)
+        if (abs(Py[i].x - midPoint.x) < d)
+            strip.push_back(Py[i]);
+    return min(d, stripClosest(strip, strip.size(), d));
+}
+
+double closest(vector<Point>& P, int n) {
+    vector<Point> Px = P, Py = P;
+    sort(Px.begin(), Px.end(), compareX);
+    sort(Py.begin(), Py.end(), compareY);
+    return closestUtil(Px, Py, n);
+}
+
+int main() {
+    vector<Point> P = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}};
+    int n = P.size();
+    cout << "La menor distancia es " << closest(P, n) << endl;
+    return 0;
+}
+*******************************************
+/*
+Modifique el algoritmo "divide y vencerás" para la multiplicación de grandes enteros de forma que permita multiplicar números en binario. Ilustre el funcionamiento del algoritmo a la hora de multiplicar los siguientes enteros: 
+A=10011011 y B=10111010
+*/
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+string addBinary(string a, string b) {
+    string result = "";
+    int s = 0;          
+    int i = a.size() - 1, j = b.size() - 1;
+    while (i >= 0 || j >= 0 || s == 1) {
+        s += ((i >= 0)? a[i] - '0': 0);
+        s += ((j >= 0)? b[j] - '0': 0);
+        result = char(s % 2 + '0') + result;
+        s /= 2;
+        i--; j--;
+    }
+    return result;
+}
+
+string multiplySingleBit(string a, string b) { 
+    return (a == "0" || b == "0") ? "0" : "1"; 
+}
+
+string multiply(string X, string Y) {
+    int n = X.size();
+    if (n == 0 || Y.size() == 0) return "0";
+    if (n == 1) return multiplySingleBit(X, Y);
+    int fh = n/2;   
+    int sh = (n - fh); 
+    string Xl = X.substr(0, fh);
+    string Xr = X.substr(fh, sh);
+    string Yl = Y.substr(0, fh);
+    string Yr = Y.substr(fh, sh);
+    string P1 = multiply(Xl, Yl);
+    string P2 = multiply(addBinary(Xl, Xr), addBinary(Yl, Yr));
+    string P3 = multiply(Xr, Yr);
+    for (int i=0; i<2*sh; i++) P1 += "0";
+    for (int i=0; i<sh; i++) P2 += "0";
+    return addBinary(addBinary(P1, P3), P2);
+}
+
+int main() {
+    string A = "10011011";
+    string B = "10111010";
+    cout << "Resultado: " << multiply(A, B) << endl;
+    return 0;
+}
+*******************************************
+/*
+Sea T(n) la función que describe el tiempo de ejecución de un algoritmo "divide y vencerás". Si T(n) es de la forma T(n)=aT(n/b)+n^k con a>=1, b>1, analice el tiempo de ejecución del algoritmo dependiendo de los valores de a y b.
+
+El tiempo de ejecución de un algoritmo "divide y vencerás" puede ser analizado usando el Teorema Maestro, que proporciona una solución cerrada para recurrencias de la forma T(n) = aT(n/b) + f(n), donde a >= 1 y b > 1.
+
+En tu caso, f(n) = n^k. Según el Teorema Maestro, hay tres casos que pueden ocurrir dependiendo de los valores de a, b y k:
+
+1. Si a > b^k, entonces T(n) = Θ(n^log_b(a)).
+2. Si a = b^k, entonces T(n) = Θ(n^k * log(n)).
+3. Si a < b^k, entonces T(n) = Θ(n^k).
+
+Por lo tanto, el tiempo de ejecución del algoritmo depende de los valores de a, b y k. Si a es mayor que b^k, entonces el tiempo de ejecución está dominado por las llamadas recursivas. Si a es igual a b^k, entonces el tiempo de ejecución es una combinación de las llamadas recursivas y el trabajo realizado en cada nivel de recursión. Si a es menor que b^k, entonces el tiempo de ejecución está dominado por el trabajo realizado en el nivel más alto de recursión.
+
+Por favor, ten en cuenta que este es un análisis asintótico, lo que significa que describe el comportamiento del tiempo de ejecución a medida que n se acerca al infinito. Para valores pequeños de n, el tiempo de ejecución real puede variar.
+*//*
+Sea A un array bidimensional de tamaño nxn, parcialmente ordenado. El criterio de ordenación es el siguiente: Los elementos en cada fila y columna se encuentran en orden ascendente. Esto es:
+A[i, j] ≤ A[i, j + 1] con i = {1..n} y j = {1..n-1}
+A[i, j] ≤ A[i + 1, j] con i = {1..n-1} y j = {1..n}
+El siguiente algoritmo nos permite determinar si un determinado elemento x se encuentra o no en el array:
+int inArray (int x, int **A, int n)
+{
+ int f,c;
+ f = 1;
+ c = n-1;
+ while ( (f<=n-1) && (c>=0) ) {
+ if ( x < A[f][c] )
+ c = c-1;
+ else if ( x > A[f][c] )
+ f = f+1;
+ else
+ return 1;
+ }
+ return 0;
+}
+*******************************************
+a. Calcule el tiempo de ejecución del algoritmo inArray.
+b. Resuelva el problema anterior usando la técnia "divide y vencerás". Calcule la eficiencia del algoritmo "divide y vencerás" que diseñe y compárelo, en términos de eficiencia, con el algoritmo in Array.
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    if (matrix.empty() || matrix[0].empty()) return false;
+    int left = 0, right = matrix.size() * matrix[0].size() - 1, mid, value;
+    while (left <= right) {
+        mid = left + (right - left) / 2;
+        value = matrix[mid / matrix[0].size()][mid % matrix[0].size()];
+        if (value < target)
+            left = mid + 1;
+        else if (value > target)
+            right = mid - 1;
+        else
+            return true;
+    }
+    return false;
+}
+
+int main() {
+    vector<vector<int>> A = {{1, 4, 7, 11, 15}, {2, 5, 8, 12, 19}, {3, 6, 9, 16, 22}, {10, 13, 14, 17, 24}, {18, 21, 23, 26, 30}};
+    int x = 25;
+    cout << (searchMatrix(A, x) ? "Elemento encontrado" : "Elemento no encontrado") << endl;
+    return 0;
+}
+*******************************************
+/*
+a. El tiempo de ejecución del algoritmo inArray es O(n), donde n es el tamaño del array bidimensional. Esto se debe a que en el peor de los casos, el algoritmo recorrerá una fila y una columna del array, lo que da un total de 2n-1 iteraciones.
+
+b. Este algoritmo tiene un tiempo de ejecución de 0(log(n)), ya que en cada iteración se divide el problema a la mitad. Por lo tanto, el algoritmo "divide y vencerás es más eficiente que el algoritmo inArray para grandes valores de n.
+*/#include <iostream>
+#include <vector>
+using namespace std;
+
+int mediana(int ini, int jnj, vector<int> &valor, int sizeTd) {
+  // if(!sizeTd%2){
+  //   int vDiv = sizeTd;
+  // }
+  cout << sizeTd << endl;
+  if (sizeTd == 1) {
+    return 0;
+  }
+  int valor01 = mediana(ini, jnj, medV, valor, sizeTd / 2);
+  int valor02 = mediana(ini, jnj, medV, valor, sizeTd / 2);
+  return valor01;
+}
+
+int main() {
+  vector<int> valores = {1, 3, 4, 2, 5, 3, 2, 1, 5, 6, 8, 7, 10};
+  int med = 0;
+  int sizeV = valores.size();
+  mediana(0, sizeV, med, valores, sizeV);
+  return 0;
+}
+*******************************************
+/*
+Diseñe un algoritmo "divide y vencerás" que permita calcular k-ésimos menos elemento de un vector.
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int partition(vector<int>& nums, int low, int high) {
+    int pivot = nums[high];
+    int i = low;
+    for (int j = low; j < high; j++) {
+        if (nums[j] < pivot) {
+            swap(nums[i], nums[j]);
+            i++;
+        }
+    }
+    swap(nums[i], nums[high]);
+    return i;
+}
+
+int quickSelect(vector<int>& nums, int low, int high, int k) {
+    if (low == high) return nums[low];
+    int pivot_index = partition(nums, low, high);
+    if (k == pivot_index)
+        return nums[k];
+    else if (k < pivot_index)
+        return quickSelect(nums, low, pivot_index - 1, k);
+    else
+        return quickSelect(nums, pivot_index + 1, high, k);
+}
+
+int findKthSmallest(vector<int>& nums, int k) {
+    return quickSelect(nums, 0, nums.size() - 1, k - 1);
+}
+
+int main() {
+    vector<int> nums = {7, 10, 4, 3, 20, 15};
+    int k = 3;
+    cout << "El " << k << "-esimo elemento mas pequeno es " << findKthSmallest(nums, k) << endl;
+    return 0;
+}
+**********************************************************VORAZ*********************************************
+// Contenedor
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+struct contenedores {
+    int indice;
+    int peso;
+    contenedores(int a, int b) {
+        indice = a;
+        peso = b;
+    }
+};
+
+bool comparar(contenedores a, contenedores b) { return a.peso < b.peso; }
+
+void voraz(const vector<contenedores>& contenedores_orig, vector<contenedores>& contenedores_resultado, int k) {
+    vector<contenedores> contenedores = contenedores_orig;  
+
+    sort(contenedores.begin(), contenedores.end(), comparar);
+    int peso_total = 0;
+
+    for (size_t i = 0; i < contenedores.size(); i++) {
+        if (peso_total + contenedores[i].peso <= k) {
+            contenedores_resultado.push_back(contenedores[i]);
+            peso_total += contenedores[i].peso;
+        }
+    }
+}
+
+int main() {
+    vector<contenedores> contenedores_orig = {
+        contenedores(1, 4),
+        contenedores(2, 2),
+        contenedores(3, 1),
+        contenedores(4, 10),
+        contenedores(5, 12),
+        contenedores(6, 6),
+        contenedores(9, 3),
+    };
+
+    int peso_max = 10;
+    vector<contenedores> contenedores_resultado;
+
+    voraz(contenedores_orig, contenedores_resultado,peso_max);
+
+    int suma = 0;
+    for (size_t i = 0; i < contenedores_resultado.size(); i++) {
+        suma += contenedores_resultado[i].peso;
+        cout << "contenedores " << contenedores_resultado[i].indice << " peso: " << contenedores_resultado[i].peso << endl;
+    }
+    cout << "total" << suma;
+
+    return 0;
+}
+*******************************************
+// mochila
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+
+struct Elemento {
+    int indice;
+    int peso;
+    double beneficio;
+};
+
+
+bool comparar(Elemento a, Elemento b) {
+    double ratio_a = (double)a.beneficio / a.peso;
+    double ratio_b = (double)b.beneficio / b.peso;
+    return ratio_a > ratio_b;
+}
+
+
+double mochila(vector<Elemento>& elementos, int capacidad, vector<Elemento>& respuesta) {
+    
+    sort(elementos.begin(), elementos.end(), comparar);
+
+    double valorTotal = 0.0;
+    int pesoActual = 0;
+
+    
+    for (size_t y = 0;y<elementos.size();y++) {
+        if (pesoActual + elementos[y].peso <= capacidad) {
+            pesoActual += elementos[y].peso;
+            valorTotal += elementos[y].beneficio;
+            respuesta.push_back({ elementos[y].indice,elementos[y].peso,elementos[y].beneficio });
+        }
+        else {
+            
+            double fraccion = (double)(capacidad - pesoActual) / elementos[y].peso;
+            double fin = fraccion * elementos[y].beneficio;
+            valorTotal += fraccion * elementos[y].beneficio;
+            respuesta.push_back({ elementos[y].indice,capacidad - pesoActual,fin });
+            break;
+        }
+    }
+
+    return  valorTotal;
+}
+
+int main() {
+
+    vector<Elemento> elementos = { {1,10, 60}, {2,20, 100}, {3,30, 120} };
+    int capacidadMochila = 50;
+    vector<Elemento> respuesta;
+    double valorOptimo = mochila(elementos, capacidadMochila,respuesta);
+    cout << "beneficio total: " << valorOptimo << endl;
+
+    for (size_t i = 0; i < respuesta.size(); i++) {
+        cout << respuesta[i].indice << " " << respuesta[i].peso << " " << respuesta[i].beneficio << endl;
+    }
+    return 0;
+}
+*******************************************
+//Moneda
+include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Moneda {
+    int valor;
+    int cantidad;
+};
+
+
+bool compararMonedas(Moneda a, Moneda b) {
+    return a.valor > b.valor;
+}
+
+
+void darCambio(vector<Moneda>& monedas, int cambio) {
+
+    sort(monedas.begin(), monedas.end(), compararMonedas);
+
+    for (const Moneda& moneda : monedas) {
+        int n_monedas = min(cambio / moneda.valor, moneda.cantidad);
+        if (n_monedas > 0) {
+            cout << "cantidad: " << n_monedas << "   valor de la moneda: " << moneda.valor << "$" << endl;
+            cambio -= n_monedas * moneda.valor;
+        }
+    }
+
+    if (cambio > 0) {
+        cout << "No se puede dar cambio exacto." << endl;
+    }
+}
+
+int main() {
+
+    vector<Moneda> monedas = { {25, 3}, {10, 2}, {5, 5}, {1, 10} };
+    int cantidadTotal = 63;
+
+    darCambio(monedas, cantidadTotal);
+
+    return 0;
+}
+*******************************************
+// Programa
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct progrma {
+    int id;
+    int tamano;
+
+
+};
+
+
+bool acen_decen(const progrma& a, const progrma& b) {
+    return a.tamano < b.tamano;
+}
+
+
+void maximizar(int capacidadDisco, vector<progrma>& progra) {
+
+
+    sort(progra.begin(), progra.end(),acen_decen);
+    int ocuapdo = 0;
+    int n_programas = 0;
+
+    for (size_t i = 0;i<progra.size();i++) {
+        if (ocuapdo + progra[i].tamano <= capacidadDisco) {
+            ocuapdo += progra[i].tamano;
+            n_programas++;
+            cout << "indice: " << progra[i].id << " almacenado: " << progra[i].tamano << " MB." << endl;
+        }
+    }
+
+    cout << "losprogramas alamacenados: " << n_programas << endl;
+}
+
+int main() {
+    int capacidadDisco = 30; 
+    int n = 5;
+    vector<progrma> progra;
+  
+
+    vector<int> tamanos = { 10, 5, 8, 12, 7 };
+
+    for (int i = 1; i <= n; i++) {
+        progra.push_back({i,tamanos[i-1]});
+    }
+
+    
+    maximizar(capacidadDisco, progra);
+
+    return 0;
+}
+*******************************************
+// tarea
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+struct Tarea {
+    int indice;
+    int beneficio;
+    int plazo;
+};
+
+bool compararTareas(const Tarea& a, const Tarea& b) {
+    return a.beneficio > b.beneficio;
+}
+
+std::vector<int> seleccionarTareas(std::vector<Tarea>& tareas) {
+ 
+    std::sort(tareas.begin(), tareas.end(), compararTareas);
+
+   
+    std::vector<int> tiempos(tareas.size(), -1);
+    std::vector<int> seleccionadas(tareas.size(), 0);
+
+    for (int i = 0; i < tareas.size(); ++i) {
+    
+        for (int j = std::min(tareas.size(), (size_t)tareas[i].plazo) - 1; j >= 0; --j) {
+            if (tiempos[j] == -1) {
+                tiempos[j] = i;
+                seleccionadas[i] = 1;
+                break;
+            }
+        }
+    }
+
+    return seleccionadas;
+}
+
+int main() {
+    
+    std::vector<Tarea> tareas = { {1,50, 2}, {2,10, 1}, {3,15, 2}, {4,30, 1} };
+
+ 
+    std::vector<int> tareasSeleccionadas = seleccionarTareas(tareas);
+
+   
+    int beneficioTotal = 0;
+    
+    for (int i = 0; i < tareas.size(); ++i) {
+        if (tareasSeleccionadas[i]) {
+            std::cout << "indice: " << tareas[i] .indice <<"  tiempo: "<< tareas[i].plazo<< "   beneficio: " << tareas[i].beneficio<< "\n";
+            beneficioTotal += tareas[i].beneficio;
+        }
+    }
+    std::cout << "\ntotla del beneficio: " << beneficioTotal << std::endl;
+
+    return 0;
+}
+
+*******************************************
+
+/*
+Nuestra empresa desarrolla software para terminales de puntos de venta [TPV] y desea que le añadamos la siguiente funcionalidad a nuestro sistema:
+a. En su versión para máquinas expendedoras, se pretende minimizar el número de monedas empleado para darle el cambio al cliente. Diseñe un algoritmo greedy que devuelva un número mínimo de monedas (de 0.01, 0.02, 0.05, 0.10, 0.20, 0.50 y 1 euro).
+b. Nuestra empresa también distribuye máquinas expendedoras de sellos de correos (de 0.54, 0.32, 0.17, 0.01 euros) y decidimos reutilizar nuestro algoritmo greedy para decidir qué sellos no proporciona necesariamente una solución óptima, aun disponiendo de un suministro inagotable de sellos de cada valor.
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<int> cambioMinimo(double total, vector<double> monedas) {
+    vector<int> resultado(monedas.size(), 0);
+    for (int i = monedas.size() - 1; i >= 0; i--) {
+        while (total >= monedas[i]) {
+            total -= monedas[i];
+            resultado[i]++;
+        }
+    }
+    return resultado;
+}
+
+int main() {
+    vector<double> monedas = {0.01, 0.02, 0.05, 0.10, 0.20, 0.50, 1.00};
+    double total = 1.87;
+    vector<int> resultado = cambioMinimo(total, monedas);
+    for (int i = 0; i < resultado.size(); i++) {
+        cout << "Monedas de " << monedas[i] << ": " << resultado[i] << endl;
+    }
+    return 0;
+}
+
+/*
+b. El algoritmo voraz no siempre proporcionará una solución óptima. Por ejemplo, si necesitas dar un cambio de 0.34 euros y usas el algoritmo voraz con los sellos disponible,
+primero seleccionarías un sello de 0.32 euros y luego dos sellos de 0.01 euros, para un total de tres sellos. Sin embargo, la solución óptima sería usar dos sellos de 0.17 euros, para un total de solo dos sellos. Esto demuestra que el algoritmo voraz no siempre proporciona una solución óptima cuando los valores de los sellos o monedas no son múltiplos unos de otros.
+*/*******************************************
+/*
+Igual que antes, tenemos un problema de asignación de recursos en el que una tarea i requiere t_i unidades de tiempo y ha de terminar, como muy tarde, en el instante de tiempo d. Ahora bien, podemos escoger la hora de inicio de la tarea s_i de tal forma que f_i = s_i + t_i. Diseñe un algoritmo greedy que minimice el retraso máximo con el que se completa la tarea (esto es, max{0, f_i-d_i}).
+*/
+
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Tarea {
+    int tiempo;
+    int deadline;
+};
+
+bool compararTareas(Tarea a, Tarea b) {
+    return a.deadline < b.deadline;
+}
+
+vector<int> asignarTareas(vector<Tarea> tareas) {
+    sort(tareas.begin(), tareas.end(), compararTareas);
+
+    vector<int> inicio(tareas.size());
+    int tiempoActual = 0;
+    for (int i = 0; i < tareas.size(); i++) {
+        inicio[i] = tiempoActual;
+        tiempoActual += tareas[i].tiempo;
+    }
+    return inicio;
+}
+
+int main() {
+    vector<Tarea> tareas = {{2, 9}, {1, 8}, {3, 10}};
+    vector<int> inicio = asignarTareas(tareas);
+    for (int i = 0; i < inicio.size(); i++) {
+        cout << "Tarea " << i + 1 << " inicia en el instante " << inicio[i] << endl;
+    }
+    return 0;
+}*******************************************
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+// Definir el tipo de par para almacenar el índice de la licencia y su incremento de precio
+typedef pair<int, double> licencia;
+
+// Función para comparar dos licencias
+bool comparar(licencia a, licencia b) {
+    return a.second > b.second;
+}
+
+double costoTotal(vector<double> incrementos) {
+    int n = incrementos.size();
+    vector<licencia> licencias(n);
+
+    // Crear la lista de licencias
+    for (int i = 0; i < n; i++) {
+        licencias[i] = make_pair(i, incrementos[i]);
+    }
+
+    // Ordenar la lista de licencias
+    sort(licencias.begin(), licencias.end(), comparar);
+
+    // Calcular el costo total
+    double costo = 0;
+    for (int k = 0; k < n; k++) {
+        costo += 100 * pow(1 + licencias[k].second, k);
+    }
+
+    return costo;
+}
+
+int main() {
+    // Crear un vector con los incrementos de precios
+    vector<double> incrementos = {0.05, 0.1, 0.02, 0.03, 0.07};
+
+    // Calcular el costo total
+    double costo = costoTotal(incrementos);
+
+    // Imprimir el costo total
+    cout << "El costo total es: " << costo << std::endl;
+
+    return 0;
+}*******************************************
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+//==============================================
+//PARTE A Y B
+struct Program
+{
+	int id;
+	int size;
+};
+
+bool comparar(Program a, Program b) {
+	return a.size < b.size;
+}
+//==============================================
+//PARTE B
+
+int main() {
+	//PARTE A
+	cout << "PARTE A" << endl;
+	int n; //cantidad de programas
+	int D; //cantidad de disco
+	cout << "Ingrese la cantidad de programas: ";
+	cin >> n;
+	cout << "Ingrese la cantidad del disco: ";
+	cin >> D;
+
+	vector<Program> programas(n);
+	cout << "Ingrese los tamanos de los programas: " << endl;
+	for(int i = 0; i < n; i++) {
+		programas[i].id = i + 1;
+		cout << "Tamano " << i + 1 << ": ";
+		cin >> programas[i].size;
+	}
+
+	//Ordenar los programas por tama�o
+	sort(programas.begin(), programas.end(), comparar);
+
+	int totalSize = 0;
+	vector<int> selector;
+
+	for(int i = 0; i < n; i++) {
+		if(totalSize + programas[i].size <= D) {
+			totalSize += programas[i].size;
+			selector.push_back(programas[i].id);
+		}
+		else {
+			break;
+		}
+	}
+
+	cout << "Numero maximo de programas almacenados: " << selector.size() << endl;
+	cout << "Programas almacenados: ";
+	for(auto id : selector) {
+		cout << id << " ";
+	}
+	cout << endl;
+	//==============================================
+	//PARTE B
+	cout << "PARTE B" << endl;
+	int n2;
+	int D2;
+	cout << "Ingrese la cantidad de programas: ";
+	cin >> n2;
+	cout << "Ingrese la cantidad del disco: ";
+	cin >> D2;
+
+	vector<Program> programas2(n2);
+	cout << "Ingrese los tamanos de los programas: " << endl;
+	for (int i = 0; i < n; i++) {
+		programas2[i].id = i + 1;
+		cout << "Tamano " << i + 1 << ": ";
+		cin >> programas2[i].size;
+	}
+
+	sort(programas2.begin(), programas2.end(), comparar);
+
+	int totalSize2 = 0;
+	vector<int> selector2;
+
+	for (int i = 0; i < n2; i++)
+	{
+		if (totalSize+programas2[i].size <= 10)
+		{
+			totalSize2 += programas2[i].size;
+			selector2.push_back(programas2[i].id);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	cout << "Cantidad maxima utilizada: " << totalSize2 << "MB" << endl;
+	cout << "Programas seleccionados: ";
+	for (auto id : selector2)
+	{
+		cout << id << " ";
+	}
+
+	cout << endl;
+	return 0;
+}*******************************************
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+//PARTE A
+struct Nodo {
+    int id;
+    int grado;
+};
+
+struct Arista {
+    int nodo1;
+    int nodo2;
+};
+
+set<int> recubrimientoGreedy(vector<Nodo>& nodos, vector<Arista>& aristas) {
+    set<int> U;
+    while (!aristas.empty()) {
+        // Ordenar los nodos por grado de incidencia en orden descendente
+        sort(nodos.begin(), nodos.end(), [](const Nodo& a, const Nodo& b) {
+            return a.grado > b.grado;
+            });
+
+        // Agregar el nodo con mayor grado a U
+        U.insert(nodos[0].id);
+
+        // Eliminar las aristas que inciden en el nodo seleccionado
+        aristas.erase(remove_if(aristas.begin(), aristas.end(), [&](const Arista& a) {
+            return a.nodo1 == nodos[0].id || a.nodo2 == nodos[0].id;
+            }), aristas.end());
+
+        // Actualizar los grados de los nodos
+        for (Nodo& nodo : nodos) {
+            nodo.grado = std::count_if(aristas.begin(), aristas.end(), [&](const Arista& a) {
+                return a.nodo1 == nodo.id || a.nodo2 == nodo.id;
+                });
+        }
+    }
+    return U;
+}
+
+int main() {
+    // Crear un grafo
+    vector<Nodo> nodos = { {1, 2}, {2, 2}, {3, 2}, {4, 1} };
+    vector<Arista> aristas = { {1, 2}, {2, 3}, {3, 4} };
+
+    // Obtener el recubrimiento del grafo
+    set<int> U = recubrimientoGreedy(nodos, aristas);
+
+    // Imprimir el recubrimiento
+    cout << "Recubrimiento: ";
+    for (int id : U) {
+        cout << id << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+//PARTE B
+/*
+b. El algoritmo greedy no siempre devuelve un recubrimiento minimal para cualquier grafo. La raz�n es que el algoritmo greedy toma decisiones locales �ptimas en cada paso
+(seleccionando el nodo con el mayor grado de incidencia) sin considerar el impacto global de estas decisiones. En algunos casos, estas decisiones locales �ptimas pueden llevar a un
+recubrimiento que no es minimal.
+*/*******************************************
+/*
+Supongamos que disponemos de n trabajadores y n tareas. Sea c_y > 0 el coste de asignarle el trabajo j al trabajador i. Una asignación válida es aquella en la que a cada trabajador le corresponde una tarea y cada tarea la realiza un trabajador diferente. Dada una asignación válida, definimos el coste de dicha asignación como la suma total de los costes individuales. 
+a. Diseñe distintas estrategias greedy para asignar tareas.
+b. Encuentre contrajemplos que demuestren que ninguna de ellas no permite encontrar la solución óptima con un algoritmo greedy.
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+//estrategia de menor coste individual
+vector<int> asignarTareasMenorCoste(vector<vector<int>> costes) {
+    int n = costes.size();
+    vector<int> asignacion(n, -1);
+    vector<bool> tareaAsignada(n, false);
+
+    for (int i = 0; i < n; i++) {
+        int minCoste = INT_MAX, tareaSeleccionada = -1;
+        for (int j = 0; j < n; j++) {
+            if (!tareaAsignada[j] && costes[i][j] < minCoste) {
+                minCoste = costes[i][j];
+                tareaSeleccionada = j;
+            }
+        }
+        asignacion[i] = tareaSeleccionada;
+        tareaAsignada[tareaSeleccionada] = true;
+    }
+    return asignacion;
+}
+
+//estrategia de menor coste total
+vector<int> asignarTareasMenorCosteTotal(vector<vector<int>> costes) {
+    int n = costes.size();
+    vector<int> asignacion(n, -1);
+    vector<bool> tareaAsignada(n, false);
+
+    for (int i = 0; i < n; i++) {
+        int minCosteTotal = INT_MAX, tareaSeleccionada = -1;
+        for (int j = 0; j < n; j++) {
+            if (!tareaAsignada[j]) {
+                int costeTotal = 0;
+                for (int k = 0; k <= i; k++)
+                    costeTotal += costes[k][j];
+                if (costeTotal < minCosteTotal) {
+                    minCosteTotal = costeTotal;
+                    tareaSeleccionada = j;
+                }
+            }
+        }
+        asignacion[i] = tareaSeleccionada;
+        tareaAsignada[tareaSeleccionada] = true;
+    }
+    return asignacion;
+}
+
+int main() {
+    vector<vector<int>> costes = {{1, 2, 3}, {2, 3, 1}, {3, 1, 2}};
+    vector<int> asignacion = asignarTareasMenorCoste(costes);
+    vector<int> asignacion2 = asignarTareasMenorCosteTotal(costes);
+
+    for (int i = 0; i < asignacion.size(); i++) {
+        cout << "Trabajador " << i+1 << " asignado a la tarea " << asignacion[i]+1 << endl;
+    }
+
+    cout << endl;
+
+    for (int i = 0; i < (int)asignacion2.size(); i++) {
+        cout << "Trabajador " << i+1 << " asignado a la tarea " << asignacion2[i]+1 << endl;
+    }
+
+    return 0;
+}
+
+/*
+b. Contraejemplos para las estrategia greedy:
+1. Estrategia de menor coste individual: Supongamos que tenemos 2 trabajdores y 2 tareas con los siguientes costes: c_11 = 1, c_12 = 2, c_21 = 2, c_22 = 1. La estrategia asignaría la tarea 1 al trabajador 1 y la tarea 2 al trabajador 2, con un coste total de 2. Sin embargo, la asignación óptima sería asignar la tarea 2 al trabajador 1 y la tarea 1 al trabajador 2, con un coste total de 3.
+
+2. Estrategia de menor coste total: Supongamos que tenemos 3 trabajadores y 3 tareas con los siguientes costos: c_11 = 1, c_12 = 2, c_13 = 3, c_21 = 2, c_22 = 3, c_23 = 1, c_31 = 3, c_32 = 1, c_33 = 2. La estrategia asignaría la tarea 1 al trabajador 1, la tarea 2 al trabajador 2 y la tarea 3 al trabajador 3, con un coste total de 6. Sin embargo, la asignación óptima sería asignar la tarea 3 al trabajador 1, la tarea 1 al trabajador 2 y la tarea 2 al trabajador 3, con un coste total de 5.
+*/
+*******************************************
+/*
+Supongamos que el coste de tender una red de fibra óptica entre dos ciudades es proporcional a la distancia euclídea entre ellas.
+a. Diseñe un algoritmo que permita interconectar un conjunto de ciudades minimizando el coste de la red de interconexión.
+b. Busque un ejemplo en el que se demuestre que puede resultar más económico instalar una centralita entre ciudades que utilizar solamente conexiones directas entre ciudades.
+*/
+
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Ciudad {
+    int x, y;
+};
+
+struct Conexion {
+    int ciudad1, ciudad2;
+    double coste;
+};
+
+vector<int> padre;
+
+int encontrarPadre(int ciudad) {
+    if (padre[ciudad] == ciudad) {
+        return ciudad;
+    }
+    return padre[ciudad] = encontrarPadre(padre[ciudad]);
+}
+
+bool unir(int ciudad1, int ciudad2) {
+    ciudad1 = encontrarPadre(ciudad1);
+    ciudad2 = encontrarPadre(ciudad2);
+    if (ciudad1 != ciudad2) {
+        padre[ciudad2] = ciudad1;
+        return true;
+    }
+    return false;
+}
+
+double distancia(Ciudad a, Ciudad b) {
+    int dx = a.x - b.x;
+    int dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
+}
+
+int main() {
+    vector<Ciudad> ciudades = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+    int n = ciudades.size();
+
+    padre.resize(n);
+    for (int i = 0; i < n; i++) {
+        padre[i] = i;
+    }
+
+    vector<Conexion> conexiones;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            conexiones.push_back({i, j, distancia(ciudades[i], ciudades[j])});
+        }
+    }
+
+    sort(conexiones.begin(), conexiones.end(), [](Conexion a, Conexion b) {
+        return a.coste < b.coste;
+    });
+
+    double costeTotal = 0;
+    for (Conexion conexion : conexiones) {
+        if (unir(conexion.ciudad1, conexion.ciudad2)) {
+            costeTotal += conexion.coste;
+            cout << "Conectando ciudad " << conexion.ciudad1 + 1 << " con ciudad " << conexion.ciudad2 + 1 << " con coste " << conexion.coste << endl;
+        }
+    }
+
+    cout << "Coste total de la red de interconexi0n: " << costeTotal << endl;
+
+    return 0;
+}*******************************************
